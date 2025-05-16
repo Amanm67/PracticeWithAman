@@ -34,7 +34,16 @@ public class BaseClass {
 
 	}
 	
-	
+	@Test
+	public void add() {
+		System.out.println("Add user");
+		
+	}
+	@Test
+	public void add1() {
+		System.out.println("Add user1");
+		
+	}
 	
 
 }
