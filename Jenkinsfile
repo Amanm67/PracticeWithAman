@@ -2,8 +2,8 @@ pipeline {
     agent any // Use any available agent
      environment { 
 
-        MAVEN_HOME = tool name: 'Maven 3.9.x', type: 'maven' // Update to your Maven version
-        JAVA_HOME = tool name: 'JDK 17', type: 'jdk' // Update to your JDK version
+        MAVEN_HOME = tool name: 'Maven 3.8.7', type: 'maven3' // Update to your Maven version
+        JAVA_HOME = tool name: 'JDK 17.0.15', type: 'JDK-17' // Update to your JDK version
     }
 
     stages {
