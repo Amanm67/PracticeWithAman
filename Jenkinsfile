@@ -25,7 +25,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Running TestNG tests...'
-                sh "${MAVEN_HOME}/bin/mvn test -Dsurefire.suiteXmlFiles=G:\Project\WithNishant\pom.xml"
+                sh "${MAVEN_HOME}/bin/mvn test -Dsurefire.suiteXmlFiles=G:/Project/WithNishant/pom.xml"
             }
         }
 
