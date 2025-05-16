@@ -1,61 +1,70 @@
 pipeline {
-    agent any
-
-    environment { 
+    agent any // Use any available agent
+     environment { 
 
         MAVEN_HOME = tool name: 'Maven 3.9.x', type: 'maven' // Update to your Maven version
         JAVA_HOME = tool name: 'JDK 17', type: 'jdk' // Update to your JDK version
     }
 
     stages {
-        stage('Checkout') {
+        stage('Clone Repository') {
             steps {
-                echo 'Cloning the repository...'
-                git branch: 'master', url: 'https://github.com/Amanm67/PracticeWithAman.git' // Replace with your repo URL
+                script {
+                    // Clone the repository from GitHub
+                    git branch: 'master', url: 'https://github.com/Amanm67/PracticeWithAman.git'
+                }
             }
         }
-
         stage('Build') {
             steps {
-                echo 'Building the project...'
-                sh "${MAVEN_HOME}/bin/mvn clean compile"
+                script {
+                    // Run Maven build
+                    sh "'${MAVEN_HOME}/bin/mvn' clean install"
+                }
             }
         }
-
-        stage('Test') {
+        stage('Run Tests') {
             steps {
-                echo 'Running TestNG tests...'
-                sh "${MAVEN_HOME}/bin/mvn test -Dsurefire.suiteXmlFiles=G:/Project/WithNishant/pom.xml"
+                script {
+                    // Execute tests using Maven
+                    sh "'${MAVEN_HOME}/bin/mvn' test"
+                }
             }
         }
-
-        stage('Publish TestNG Results') {
+        stage('Publish Test Results') {
             steps {
-                echo 'Publishing TestNG results...'
-                publishTestNGResults testResultsPattern: '**/target/surefire-reports/testng-results.xml'
+                script {
+                    // Archive test results
+                    junit allowEmptyResults: true, testResults: "${TEST_RESULTS_DIR}/**/*.xml"
+                }
             }
         }
-
-        stage('SonarQube Analysis') {
+        stage('Deploy') {
             steps {
-                echo 'Starting SonarQube analysis...'
-                withSonarQubeEnv('SonarQube') { // Update the server name if needed
-                    sh "${MAVEN_HOME}/bin/mvn sonar:sonar"
+                script {
+                    // Deploy your application (this can vary based on your setup)
+                    echo 'Deploying application...'
+                    // Example command for deployment:
+                    // sh './deploy.sh'
                 }
             }
         }
     }
-
     post {
+        always {
+            // Wrap cleanup steps in a node block
+            script {
+                node {
+                    // Clean up workspace after build
+                    cleanWs()
+                }
+            }
+        }
         success {
             echo 'Build and tests completed successfully!'
         }
         failure {
-            echo 'Build or tests failed.'
-        }
-        always {
-            echo 'Cleaning up...'
-            cleanWs() // Cleanup workspace
+            echo 'Build or tests failed. Check the logs for details.'
         }
     }
 }
